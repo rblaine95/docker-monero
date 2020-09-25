@@ -1,7 +1,7 @@
 FROM debian:buster
 
-ARG MONERO_VERSION=0.16.0.3
-ARG MONERO_SHA256=cb67ad0bec9a342b0f0be3f1fdb4a2c8d57a914be25fc62ad432494779448cc3
+ARG MONERO_VERSION=0.17.0.0
+ARG MONERO_SHA256=29a1a3d2d4a6bcbaccba0a8016be43c36c88523c358c721d9886e1f0c5ae662d
 ENV PATH=/opt/monero:${PATH}
 
 WORKDIR /opt
@@ -18,7 +18,7 @@ RUN apt update && \
     echo "$MONERO_SHA256  monero-linux-x64-v$MONERO_VERSION.tar.bz2" | sha256sum -c - && \
     tar -xvf monero-linux-x64-v$MONERO_VERSION.tar.bz2 && \
     rm -f monero-linux-x64-v$MONERO_VERSION.tar.bz2 && \
-    ln -s /opt/monero-x86_64-linux-gnu-v0.16.0.1 /opt/monero
+    ln -s /opt/monero-x86_64-linux-gnu-v${MONERO_VERSION} /opt/monero
 
 USER monero
 
