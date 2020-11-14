@@ -1,24 +1,18 @@
-FROM debian:buster
+FROM alpine:3.12
 
-ARG MONERO_VERSION=0.17.1.3
-ARG MONERO_SHA256=cf3fb693339caed43a935c890d71ecab5b89c430e778dc5ef0c3173c94e5bf64
-ENV PATH=/opt/monero:${PATH}
+# https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
+# https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
+ARG MONERO_VERSION=0.17.1.3-r0
 
 WORKDIR /opt
 
-RUN apt update && \
-    apt -y upgrade && \
-    apt -y install curl bzip2 && \
-    apt clean && \
-    apt -y autoremove && \
-    useradd -ms /bin/bash monero && \
+RUN apk update && \
+    apk --no-cache upgrade && \
+    apk --no-cache add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing monero=${MONERO_VERSION} && \
+    addgroup monero && \
+    adduser -D -h /home/monero -s /bin/sh -G monero monero && \
     mkdir -p /home/monero/.bitmonero && \
-    chown -R monero:monero /home/monero/.bitmonero && \
-    curl https://downloads.getmonero.org/cli/monero-linux-x64-v$MONERO_VERSION.tar.bz2 -O && \
-    echo "$MONERO_SHA256  monero-linux-x64-v$MONERO_VERSION.tar.bz2" | sha256sum -c - && \
-    tar -xvf monero-linux-x64-v$MONERO_VERSION.tar.bz2 && \
-    rm -f monero-linux-x64-v$MONERO_VERSION.tar.bz2 && \
-    ln -s /opt/monero-x86_64-linux-gnu-v${MONERO_VERSION} /opt/monero
+    chown -R monero:monero /home/monero/.bitmonero
 
 USER monero
 
@@ -28,4 +22,4 @@ VOLUME /home/monero/.bitmonero
 
 EXPOSE 18080 18081
 
-ENTRYPOINT ["/opt/monero/monerod"]
+ENTRYPOINT ["/usr/bin/monerod"]
