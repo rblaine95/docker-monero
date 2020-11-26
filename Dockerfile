@@ -1,8 +1,8 @@
-FROM alpine:3.12
+FROM quay.io/rblaine95/alpine:v3.12
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.1.3-r0
+ARG MONERO_VERSION=0.17.1.5-r0
 
 WORKDIR /opt
 
