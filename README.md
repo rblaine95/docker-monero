@@ -8,8 +8,7 @@ Usage:
 docker run \
   -d \
   --restart=always \
-  -p 18080:18080 \
-  -p 18081:18081 \
+  --net=host \
   -v /path/to/bitmonero:/home/monero/.bitmonero \
   quay.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
 ```
