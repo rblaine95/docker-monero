@@ -1,18 +1,42 @@
-FROM quay.io/rblaine95/alpine:v3.12
+FROM quay.io/rblaine95/debian:10 AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.1.5-r0
+ARG MONERO_VERSION=0.17.1.7
 
 WORKDIR /opt
 
-RUN apk update && \
-    apk --no-cache upgrade && \
-    apk --no-cache add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing monero=${MONERO_VERSION} && \
-    addgroup monero && \
-    adduser -D -h /home/monero -s /bin/sh -G monero monero && \
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y build-essential \
+        cmake pkg-config libboost-all-dev \
+        libssl-dev libzmq3-dev libunbound-dev \
+        libsodium-dev libunwind8-dev liblzma-dev \
+        libreadline6-dev libldns-dev libexpat1-dev \
+        doxygen graphviz libpgm-dev qttools5-dev-tools \
+        libhidapi-dev libusb-1.0-0-dev libprotobuf-dev \
+        protobuf-compiler libudev-dev git && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
+
+RUN cd monero && \
+    make release-static-linux-x86_64
+
+FROM quay.io/rblaine95/debian:10
+
+ENV PATH=/opt/monero:${PATH}
+
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y ca-certificates libkrb5-dev && \
+    apt clean && \
+    apt autoremove -y && \
+    rm -rf /var/lib/apt && \
+    useradd -ms /bin/bash monero && \
     mkdir -p /home/monero/.bitmonero && \
     chown -R monero:monero /home/monero/.bitmonero
+COPY --from=builder /opt/monero/build/Linux/_no_branch_/release/bin/* /opt/monero/
 
 USER monero
 
@@ -22,4 +46,4 @@ VOLUME /home/monero/.bitmonero
 
 EXPOSE 18080 18081
 
-ENTRYPOINT ["/usr/bin/monerod"]
+ENTRYPOINT ["/opt/monero/monerod"]
