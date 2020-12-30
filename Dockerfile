@@ -2,7 +2,7 @@ FROM quay.io/rblaine95/debian:10 AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.1.7
+ARG MONERO_VERSION=0.17.1.8
 
 WORKDIR /opt
 
