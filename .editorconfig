@@ -12,29 +12,5 @@ indent_size = 2
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.go]
-indent_style = tab
-indent_size = 4
-
-[*.golden]
-trim_trailing_whitespace = false
-insert_final_newline = false
-
-[*.expected]
-trim_trailing_whitespace = false
-insert_final_newline = false
-
-[*.{yaml,yml}]
-indent_size = 2
-
-[*.tf]
-trim_trailing_whitespace = false
-
-[**/inputs-crlf/variables.tf]
-end_of_line = crlf
-
-[Makefile]
-indent_style = tab
-
 [*.md]
 trim_trailing_whitespace = false
