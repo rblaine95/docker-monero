@@ -20,7 +20,7 @@ That might be fun.
 ### I want to buy you a coffee
 This is just a hobby project for me, if you really want to buy me a coffee, thank you :)  
 
-Monero: `84S1P3qYJgeVtsPUS5gFXLVoiD4Pn55T31FBihryEgy4FYseZvuQg5H9ziwyMAXY2Bf5ewg9GH1fiSkjprrC37NP4inWEov`
+Monero: `8AoCMLDJ4J4fkeEokYT1QQbVd7vemd7nHVH1uurxng3cXx1wdKKdp14Fk1PDws4vkagHRF2BkdQo9DfzxxpEr4pUCaGWb5U`
 
 ### I don't have Monero
 You should definitly get some.  
