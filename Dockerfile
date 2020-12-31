@@ -1,4 +1,4 @@
-FROM quay.io/rblaine95/debian:10 AS builder
+FROM quay.io/rblaine95/debian:10-slim AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
@@ -23,7 +23,7 @@ RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MON
 RUN cd monero && \
     make release-static-linux-x86_64
 
-FROM quay.io/rblaine95/debian:10
+FROM quay.io/rblaine95/debian:10-slim
 
 ENV PATH=/opt/monero:${PATH}
 
