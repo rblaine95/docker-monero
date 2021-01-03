@@ -1,0 +1,64 @@
+name: Docker
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+env:
+  IMAGE_NAME: monero
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Github
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+      - name: Tag & Push image
+        run: |
+          DH_IMAGE=rblaine/$IMAGE_NAME
+          GH_IMAGE=ghcr.io/${{ github.repository }}/$IMAGE_NAME
+          Q_IMAGE=quay.io/rblaine95/$IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          echo Dockerhub=$DH_IMAGE
+          echo Github=$GH_IMAGE
+          echo Quay=$Q_IMAGE
+          echo VERSION=$VERSION
+
+          docker tag $IMAGE_NAME $DH_IMAGE:$VERSION
+          docker tag $IMAGE_NAME $GH_IMAGE:$VERSION
+          docker tag $IMAGE_NAME $Q_IMAGE:$VERSION
+
+          docker push $DH_IMAGE:$VERSION
+          docker push $GH_IMAGE:$VERSION
+          docker push $Q_IMAGE:$VERSION
