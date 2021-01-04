@@ -1,9 +1,9 @@
 # Docker Monero
 My personal unprivileged Monero Docker image.  
 
-[![Github tag (latest by date)](https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)")](https://github.com/rblaine95/docker_monero/tags)  
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)")](https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker)  
-[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/rblaine/monero "Docker Image Size (latest by date)")](https://hub.docker.com/r/rblaine/monero)
+[![Github tag (latest by date)][github-tag-badge]][github-tag-link]  
+[![GitHub Workflow Status (branch)][github-actions-badge]][github-actions-link]  
+[![Docker Image Size (latest by date)][docker-image-size-badge]][docker-image-link]
 
 Usage:
 ```sh
@@ -40,3 +40,11 @@ You should definitly get some.
 * [ChangeNow.io](https://changenow.io/)
 * [MorphToken.com](https://www.morphtoken.com/)
 * [Bisq.network](https://bisq.network/)
+
+
+[github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
+[github-tag-link]: https://github.com/rblaine95/docker_monero/tags
+[github-actions-badge]: https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)"
+[github-actions-link]: https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker
+[docker-image-size-badge]: https://img.shields.io/docker/image-size/rblaine/monero "Docker Image Size (latest by date)"
+[docker-image-link]: https://hub.docker.com/r/rblaine/monero
