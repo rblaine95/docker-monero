@@ -1,4 +1,4 @@
-FROM debian:10-slim AS builder
+FROM ghcr.io/rblaine95/debian:10-slim AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
@@ -23,7 +23,7 @@ RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MON
 RUN cd monero && \
     make -j2 release-static-linux-x86_64
 
-FROM debian:10-slim
+FROM ghcr.io/rblaine95/debian:10-slim
 
 ENV PATH=/opt/monero:${PATH}
 
@@ -45,5 +45,7 @@ WORKDIR /home/monero
 VOLUME /home/monero/.bitmonero
 
 EXPOSE 18080 18081
+
+LABEL org.opencontainers.image.source https://github.com/rblaine95/docker_monero
 
 ENTRYPOINT ["/opt/monero/monerod"]

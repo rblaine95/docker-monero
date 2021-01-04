@@ -19,7 +19,7 @@ docker run \
 I'm using Github Actions to build and publish this image to:
 * [rblaine/monero](https://hub.docker.com/r/rblaine/monero)
 * [quay.io/rblaine95/monero](https://quay.io/repository/rblaine95/monero)
-* [ghcr.io/rblaine95/docker_monero/monero](https://ghcr.io/rblaine95/docker_monero/monero)
+* [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
 
 ### Future stuff
 I don't know, maybe I'll write a helm chart for this for Kubernetes?  
