@@ -46,6 +46,4 @@ VOLUME /home/monero/.bitmonero
 
 EXPOSE 18080 18081
 
-LABEL org.opencontainers.image.source https://github.com/rblaine95/docker_monero
-
 ENTRYPOINT ["/opt/monero/monerod"]

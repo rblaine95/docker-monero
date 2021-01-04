@@ -31,7 +31,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: |
+          docker build \
+            --tag $IMAGE_NAME \
+            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
+            .
       - name: Tag & Push image
         run: |
           DH_IMAGE=rblaine/$IMAGE_NAME
