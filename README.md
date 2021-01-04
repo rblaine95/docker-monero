@@ -18,7 +18,7 @@ docker run \
 
 ### Where can I download the image?
 I'm using Github Actions to build and publish this image to:
-* [rblaine/monero](https://hub.docker.com/r/rblaine/monero)
+* [docker.io/rblaine/monero](https://hub.docker.com/r/rblaine/monero)
 * [quay.io/rblaine95/monero](https://quay.io/repository/rblaine95/monero)
 * [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
 
