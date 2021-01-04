@@ -1,5 +1,5 @@
 # Docker Monero
-My personal Monero Docker image.  
+My personal unprivileged Monero Docker image.  
 
 [![Github tag (latest by date)](https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)")](https://github.com/rblaine95/docker_monero/tags)  
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)")](https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker)  
@@ -8,9 +8,10 @@ My personal Monero Docker image.
 Usage:
 ```sh
 docker run \
-  -d \
+  -dit \
   --restart=always \
   --net=host \
+  --name=monerod \
   -v /path/to/bitmonero:/home/monero/.bitmonero \
   ghcr.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
 ```
@@ -33,6 +34,7 @@ Monero: `8AoCMLDJ4J4fkeEokYT1QQbVd7vemd7nHVH1uurxng3cXx1wdKKdp14Fk1PDws4vkagHRF2
 
 ### I don't have Monero
 You should definitly get some.  
+* [monero-project/monero](https://github.com/monero-project/monero)
 * [GetMonero.org](https://www.getmonero.org/)
 * [/r/monero](https://www.reddit.com/r/monero)  
 * [ChangeNow.io](https://changenow.io/)
