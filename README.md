@@ -2,7 +2,7 @@
 My personal Monero Docker image.  
 
 [![Github tag (latest by date)](https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)")](https://github.com/rblaine95/docker_monero/tags)  
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker)](https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker)  
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)")](https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker)  
 [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/rblaine/monero "Docker Image Size (latest by date)")](https://hub.docker.com/r/rblaine/monero)
 
 Usage:
@@ -12,7 +12,7 @@ docker run \
   --restart=always \
   --net=host \
   -v /path/to/bitmonero:/home/monero/.bitmonero \
-  quay.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
+  ghcr.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
 ```
 
 ### Where can I download the image?
