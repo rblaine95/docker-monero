@@ -2,7 +2,7 @@ FROM ghcr.io/rblaine95/debian:10-slim AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.1.9
+ARG MONERO_VERSION=0.17.2.0
 
 WORKDIR /opt
 
