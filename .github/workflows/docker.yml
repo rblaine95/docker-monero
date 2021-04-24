@@ -38,7 +38,7 @@ jobs:
             .
       - name: Tag & Push image
         run: |
-          DH_IMAGE=rblaine/$IMAGE_NAME
+          DH_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
           GH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           Q_IMAGE=quay.io/rblaine95/$IMAGE_NAME
 
