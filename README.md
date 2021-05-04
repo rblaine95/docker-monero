@@ -34,12 +34,12 @@ Monero: `8AoCMLDJ4J4fkeEokYT1QQbVd7vemd7nHVH1uurxng3cXx1wdKKdp14Fk1PDws4vkagHRF2
 
 ### I don't have Monero
 You should definitly get some.  
-* [monero-project/monero](https://github.com/monero-project/monero)
-* [GetMonero.org](https://www.getmonero.org/)
+* [monero-project/monero](https://github.com/monero-project/monero)  
+* [GetMonero.org](https://www.getmonero.org/)  
 * [/r/monero](https://www.reddit.com/r/monero)  
-* [ChangeNow.io](https://changenow.io/)
-* [MorphToken.com](https://www.morphtoken.com/)
-* [Bisq.network](https://bisq.network/)
+* [ChangeNow.io](https://changenow.io/)  
+* [MorphToken.com](https://www.morphtoken.com)  
+* [Haveno](https://github.com/haveno-dex/haveno)
 
 
 [github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
