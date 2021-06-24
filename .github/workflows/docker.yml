@@ -1,9 +1,6 @@
 name: Docker
 
-on:
-  workflow_dispatch:
-  push:
-  pull_request:
+on: [workflow_dispatch, push]
 
 env:
   IMAGE_NAME: monero
