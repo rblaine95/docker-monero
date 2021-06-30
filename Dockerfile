@@ -1,3 +1,6 @@
+###################
+# --- builder --- #
+###################
 FROM ghcr.io/rblaine95/debian:10-slim AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
@@ -6,9 +9,9 @@ ARG MONERO_VERSION=0.17.2.0
 
 WORKDIR /opt
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt install -y build-essential \
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y build-essential \
         cmake pkg-config libboost-all-dev \
         libssl-dev libzmq3-dev libunbound-dev \
         libsodium-dev libunwind8-dev liblzma-dev \
@@ -21,29 +24,32 @@ RUN apt update && \
 RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 RUN cd monero && \
-    make -j2 release-static-linux-x86_64
+    make -j2 release-static-linux-$(uname -m)
 
+##################
+# --- runner --- #
+##################
 FROM ghcr.io/rblaine95/debian:10-slim
 
 ENV PATH=/opt/monero:${PATH}
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt install -y ca-certificates libkrb5-dev && \
-    apt clean && \
-    apt autoremove -y && \
+RUN apt-get update && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y ca-certificates libkrb5-dev && \
+    apt-get clean && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt && \
     useradd -ms /bin/bash monero && \
-    mkdir -p /home/monero/.bitmonero && \
-    chown -R monero:monero /home/monero/.bitmonero
+    mkdir /opt/bitmonero && \
+    ln -s /opt/bitmonero /home/monero/.bitmonero && \
+    chown -R monero:monero /home/monero/.bitmonero && \
+    chown -R monero:monero /opt/bitmonero
+
 COPY --from=builder /opt/monero/build/Linux/_no_branch_/release/bin/* /opt/monero/
 
 USER monero
-
 WORKDIR /home/monero
-
-VOLUME /home/monero/.bitmonero
-
+VOLUME /opt/bitmonero
 EXPOSE 18080 18081
 
 ENTRYPOINT ["/opt/monero/monerod"]
