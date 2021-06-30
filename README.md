@@ -12,7 +12,7 @@ docker run \
   --restart=always \
   --net=host \
   --name=monerod \
-  -v /path/to/bitmonero:/home/monero/.bitmonero \
+  -v /path/to/bitmonero:/opt/bitmonero \
   ghcr.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
 ```
 
