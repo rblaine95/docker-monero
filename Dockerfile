@@ -35,7 +35,7 @@ ENV PATH=/opt/monero:${PATH}
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y ca-certificates libkrb5-dev && \
+    apt-get install -y tini ca-certificates libkrb5-dev && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt && \
@@ -52,4 +52,4 @@ WORKDIR /home/monero
 VOLUME /opt/bitmonero
 EXPOSE 18080 18081
 
-ENTRYPOINT ["/opt/monero/monerod"]
+ENTRYPOINT ["tini", "--" ,"/opt/monero/monerod"]
