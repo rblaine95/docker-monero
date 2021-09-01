@@ -5,7 +5,7 @@ FROM ghcr.io/rblaine95/debian:10-slim AS builder
 
 # https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
 # https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.2.0
+ARG MONERO_VERSION=0.17.2.3
 
 WORKDIR /opt
 
@@ -29,7 +29,7 @@ RUN cd monero && \
 ##################
 # --- runner --- #
 ##################
-FROM ghcr.io/rblaine95/debian:10-slim
+FROM ghcr.io/rblaine95/debian:11-slim
 
 ENV PATH=/opt/monero:${PATH}
 
