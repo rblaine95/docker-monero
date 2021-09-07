@@ -24,7 +24,13 @@ RUN apt-get update && \
 RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 RUN cd monero && \
-    make -j2 release-static-linux-$(uname -m)
+    case "$(uname -m)" in \
+      x86_64) make release-static-linux-x86_64;; \
+      aarch64* | arm64 | armv8*) make release-static-linux-armv8;; \
+      armv7*) make release-static-linux-armv7;; \
+      armv6*) make release-static-linux-armv6;; \
+      *) echo "Unknown architecture: $(uname -m)" && exit 1;; \
+    esac
 
 ##################
 # --- runner --- #
