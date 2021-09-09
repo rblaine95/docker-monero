@@ -3,10 +3,6 @@
 ###################
 FROM ghcr.io/rblaine95/debian:10-slim AS builder
 
-# https://git.alpinelinux.org/aports/tree/testing/monero/APKBUILD
-# https://github.com/alpinelinux/aports/blob/master/testing/monero/APKBUILD
-ARG MONERO_VERSION=0.17.2.3
-
 WORKDIR /opt
 
 RUN apt-get update && \
@@ -21,14 +17,16 @@ RUN apt-get update && \
         protobuf-compiler libudev-dev git && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
+ARG MONERO_VERSION=0.17.2.3
 RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
+ARG BUILD_THREADS=1
 RUN cd monero && \
     case "$(uname -m)" in \
-      x86_64) make release-static-linux-x86_64;; \
-      aarch64* | arm64 | armv8*) make release-static-linux-armv8;; \
-      armv7*) make release-static-linux-armv7;; \
-      armv6*) make release-static-linux-armv6;; \
+      x86_64) make -j${BUILD_THREADS} release-static-linux-x86_64;; \
+      aarch64* | arm64 | armv8*) make -j${BUILD_THREADS} release-static-linux-armv8;; \
+      armv7*) make -j${BUILD_THREADS} release-static-linux-armv7;; \
+      armv6*) make -j${BUILD_THREADS} release-static-linux-armv6;; \
       *) echo "Unknown architecture: $(uname -m)" && exit 1;; \
     esac
 
