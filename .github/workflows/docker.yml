@@ -4,10 +4,18 @@ on: [workflow_dispatch, push]
 
 env:
   IMAGE_NAME: monero
+  PLATFORMS: amd64 arm64/v8 arm/v7
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: amd64
+          - platform: arm64/v8
+          - platform: arm/v7
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Login to Github
@@ -16,28 +24,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
-      - name: Login to Quay
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-      - name: Login to Dockerhub
-        uses: docker/login-action@v1.10.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - name: Install Buildx
+        uses: docker/setup-buildx-action@v1.6.0
       - name: Build image
+        id: build_image
         run: |
-          docker build \
-            --tag $IMAGE_NAME \
-            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
-            .
-      - name: Tag & Push image
-        run: |
-          DH_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME
-          GH_IMAGE=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-          Q_IMAGE=quay.io/rblaine95/$IMAGE_NAME
+          # Get the arch for this build
+          ARCH=$(echo "${{ matrix.platform }}" | sed 's/\//-/g')
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
@@ -48,15 +43,64 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          echo Dockerhub=$DH_IMAGE
-          echo Github=$GH_IMAGE
-          echo Quay=$Q_IMAGE
-          echo VERSION=$VERSION
+          IMAGE="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION"
 
-          docker tag $IMAGE_NAME $DH_IMAGE:$VERSION
-          docker tag $IMAGE_NAME $GH_IMAGE:$VERSION
-          docker tag $IMAGE_NAME $Q_IMAGE:$VERSION
+          docker buildx build \
+            --platform linux/${{ matrix.platform }} \
+            --tag $IMAGE \
+            --build-arg BUILD_THREADS=3 \
+            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
+            --output type=docker \
+            .
 
-          docker push $DH_IMAGE:$VERSION
-          docker push $GH_IMAGE:$VERSION
-          docker push $Q_IMAGE:$VERSION
+            docker push $IMAGE
+            digest=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE)
+            echo "digest: $digest"
+
+            echo $digest > $IMAGE_NAME-$VERSION-$ARCH.digest
+
+            echo "::set-output name=digest::${digest}"
+            echo "::set-output name=version::${VERSION}"
+            echo "::set-output name=arch::${ARCH}"
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.IMAGE_NAME }}-${{ steps.build_image.outputs.version }}-${{ steps.build_image.outputs.arch }}
+          path: ${{ env.IMAGE_NAME }}-${{ steps.build_image.outputs.version }}-${{ steps.build_image.outputs.arch }}.digest
+          if-no-files-found: error
+          retention-days: 1
+  manifest:
+    name: Manifest
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Login to Github
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_PAT }}
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+      - name: Build and push manifest
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+
+          IMAGE="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION"
+
+          for arch in $(echo $PLATFORMS | sed 's/\//-/g'); do
+            digest=$(cat ./$IMAGE_NAME-$VERSION-$arch/$IMAGE_NAME-$VERSION-$arch.digest)
+            amend="${amend}${digest} "
+          done
+
+          echo "docker manifest create $IMAGE $amend"
+          docker manifest create $IMAGE $amend
+          docker manifest push $IMAGE
