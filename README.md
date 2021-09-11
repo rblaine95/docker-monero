@@ -3,6 +3,7 @@ My personal unprivileged Monero Docker image.
 
 [![Github tag (latest by date)][github-tag-badge]][github-tag-link]  
 [![GitHub Workflow Status (branch)][github-actions-badge]][github-actions-link]  
+[![Docker Image Size (latest by date)][docker-image-size-badge]][docker-image-link]
 
 Usage:
 ```sh
@@ -18,6 +19,7 @@ docker run \
 ### Where can I download the image?
 I'm using Github Actions to build and publish this image to:
 * [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
+* [docker.io/rblaine/monero](https://hub.docker.com/r/rblaine/monero)
 
 ### Future stuff
 I don't know, maybe I'll write a helm chart for this for Kubernetes?  
@@ -43,3 +45,5 @@ You should definitly get some.
 [github-tag-link]: https://github.com/rblaine95/docker_monero/tags
 [github-actions-badge]: https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)"
 [github-actions-link]: https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker
+[docker-image-size-badge]: https://img.shields.io/docker/image-size/rblaine/monero/latest "Docker Image Size"
+[docker-image-link]: https://hub.docker.com/r/rblaine/monero
