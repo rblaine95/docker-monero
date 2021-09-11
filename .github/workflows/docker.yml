@@ -28,8 +28,8 @@ jobs:
         uses: docker/setup-qemu-action@v1.2.0
       - name: Install Buildx
         uses: docker/setup-buildx-action@v1.6.0
-      - name: Build image
-        id: build_image
+      - name: Build Builder
+        id: build
         run: |
           # Get the arch for this build
           ARCH=$(echo "${{ matrix.platform }}" | sed 's/\//-/g')
@@ -43,34 +43,23 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          IMAGE="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION"
-
           docker buildx build \
             --platform linux/${{ matrix.platform }} \
-            --tag $IMAGE \
+            --target builder \
             --build-arg BUILD_THREADS=3 \
-            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
-            --output type=docker \
+            --cache-to type=local,dest=build-cache-${ARCH} \
             .
 
-            docker push $IMAGE
-            digest=$(docker inspect --format='{{index .RepoDigests 0}}' $IMAGE)
-            echo "digest: $digest"
-
-            echo $digest > $IMAGE_NAME-$VERSION-$ARCH.digest
-
-            echo "::set-output name=digest::${digest}"
-            echo "::set-output name=version::${VERSION}"
-            echo "::set-output name=arch::${ARCH}"
+          echo "::set-output name=arch::${ARCH}"
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.IMAGE_NAME }}-${{ steps.build_image.outputs.version }}-${{ steps.build_image.outputs.arch }}
-          path: ${{ env.IMAGE_NAME }}-${{ steps.build_image.outputs.version }}-${{ steps.build_image.outputs.arch }}.digest
+          name: build-cache-${{ steps.build.outputs.arch }}
+          path: build-cache-${{ steps.build.outputs.arch }}
           if-no-files-found: error
           retention-days: 1
-  manifest:
-    name: Manifest
+  package:
+    name: Package
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
@@ -81,9 +70,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+      - name: Install Buildx
+        uses: docker/setup-buildx-action@v1.6.0
       - name: Download Artifacts
         uses: actions/download-artifact@v2
-      - name: Build and push manifest
+      - name: Package and push Runner
         run: |
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
@@ -94,13 +87,15 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          IMAGE="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION"
-
-          for arch in $(echo $PLATFORMS | sed 's/\//-/g'); do
-            digest=$(cat ./$IMAGE_NAME-$VERSION-$arch/$IMAGE_NAME-$VERSION-$arch.digest)
-            amend="${amend}${digest} "
+          for arch in $PLATFORMS; do
+            platforms="${platforms} --platform linux/${arch}"
+            cache="${cache} --cache-from type=local,src=./build-cache-$(echo $arch | sed 's/\//-/g')"
           done
 
-          echo "docker manifest create $IMAGE $amend"
-          docker manifest create $IMAGE $amend
-          docker manifest push $IMAGE
+          build="docker buildx build ${platforms} \
+            --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
+            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
+            $cache --push ."
+
+          echo "$build"
+          $build
