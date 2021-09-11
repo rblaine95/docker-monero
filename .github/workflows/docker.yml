@@ -41,15 +41,16 @@ jobs:
             --platform linux/${{ matrix.platform }} \
             --target builder \
             --build-arg BUILD_THREADS=3 \
-            --cache-to type=local,dest=build-cache-${ARCH} \
+            --cache-to type=local,dest=${IMAGE_NAME}-${VERSION}-${ARCH} \
             .
 
+          echo "::set-output name=version=${VERSION}"
           echo "::set-output name=arch::${ARCH}"
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: build-cache-${{ steps.build.outputs.arch }}
-          path: build-cache-${{ steps.build.outputs.arch }}
+          name: ${{ env.IMAGE_NAME }}-${{ steps.build.outputs.version }}-${{ steps.build.outputs.arch }}
+          path: ${{ env.IMAGE_NAME }}-${{ steps.build.outputs.version }}-${{ steps.build.outputs.arch }}
           if-no-files-found: error
           retention-days: 1
   package:
@@ -88,12 +89,13 @@ jobs:
 
           for arch in $PLATFORMS; do
             platforms="${platforms} --platform linux/${arch}"
-            cache="${cache} --cache-from type=local,src=./build-cache-$(echo $arch | sed 's/\//-/g')"
+            cache="${cache} --cache-from type=local,src=./$IMAGE_NAME-$VERSION-$(echo $arch | sed 's/\//-/g')"
           done
 
           build="docker buildx build ${platforms} \
             --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
+            --build-arg BUILD_THREADS=3 \
             --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
             $cache --push ."
 
