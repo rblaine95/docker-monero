@@ -64,6 +64,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+      - name: Login to Quay
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
       - name: Login to Dockerhub
         uses: docker/login-action@v1.10.0
         with:
@@ -91,8 +97,11 @@ jobs:
             cache="${cache} --cache-from type=local,src=./build-cache-$(echo $arch | sed 's/\//-/g')"
           done
 
+          quay_user="$(echo ${{ secrets.QUAY_USERNAME }} | cut -f1 -d'+')"
+
           build="docker buildx build ${platforms} \
             --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
+            --tag quay.io/${quay_user}/$IMAGE_NAME:$VERSION \
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
             --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
             $cache --push ."
