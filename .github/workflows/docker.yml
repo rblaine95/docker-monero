@@ -18,12 +18,6 @@ jobs:
           - platform: arm/v7
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Login to Github
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Install Buildx
@@ -70,6 +64,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Install Buildx
@@ -94,6 +93,7 @@ jobs:
 
           build="docker buildx build ${platforms} \
             --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
+            --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
             --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
             $cache --push ."
 
