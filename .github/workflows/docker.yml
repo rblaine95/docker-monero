@@ -17,7 +17,7 @@ jobs:
           - platform: arm64/v8
           - platform: arm/v7
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
       - name: Install Buildx
@@ -57,7 +57,7 @@ jobs:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.5
       - name: Login to Github
         uses: docker/login-action@v1.10.0
         with:
