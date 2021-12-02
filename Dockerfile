@@ -17,7 +17,7 @@ RUN apt-get update && \
         protobuf-compiler libudev-dev git && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
-ARG MONERO_VERSION=0.17.2.3
+ARG MONERO_VERSION=0.17.3.0
 RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 ARG BUILD_THREADS=1
