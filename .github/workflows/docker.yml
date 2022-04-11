@@ -46,7 +46,7 @@ jobs:
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=arch::${ARCH}"
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.IMAGE_NAME }}-${{ steps.build.outputs.version }}-${{ steps.build.outputs.arch }}
           path: ${{ env.IMAGE_NAME }}-${{ steps.build.outputs.version }}-${{ steps.build.outputs.arch }}
