@@ -1,7 +1,7 @@
 ###################
 # --- builder --- #
 ###################
-FROM ghcr.io/rblaine95/debian:10-slim AS builder
+FROM debian:10-slim AS builder
 
 WORKDIR /opt
 
@@ -33,7 +33,7 @@ RUN cd monero && \
 ##################
 # --- runner --- #
 ##################
-FROM ghcr.io/rblaine95/debian:11-slim
+FROM debian:11-slim
 
 ENV PATH=/opt/monero:${PATH}
 
