@@ -1,7 +1,7 @@
 ###################
 # --- builder --- #
 ###################
-FROM debian:10-slim AS builder
+FROM docker.io/debian:10-slim AS builder
 
 WORKDIR /opt
 
@@ -18,7 +18,7 @@ RUN apt-get update && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 ARG MONERO_VERSION=0.17.3.2
-RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
+RUN git clone --recursive https://github.com/monero-project/monero.git -b v${MONERO_VERSION} --depth 1
 
 ARG BUILD_THREADS=1
 RUN cd monero && \
@@ -33,7 +33,7 @@ RUN cd monero && \
 ##################
 # --- runner --- #
 ##################
-FROM debian:11-slim
+FROM docker.io/debian:11-slim
 
 ENV PATH=/opt/monero:${PATH}
 
