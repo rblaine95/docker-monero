@@ -1,7 +1,7 @@
 ###################
 # --- builder --- #
 ###################
-FROM docker.io/debian:11-slim AS builder
+FROM docker.io/debian:10-slim AS builder
 
 WORKDIR /opt
 
