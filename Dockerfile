@@ -61,7 +61,7 @@ WORKDIR /opt/monero
 RUN case "$(uname -m)" in \
       x86_64) make -j${BUILD_THREADS:-$(nproc)} release-static-linux-x86_64;; \
       aarch64* | arm64 | armv8*) make -j${BUILD_THREADS:-$(nproc)} release-static-linux-armv8;; \
-      armv7*) make -j${BUILD_THREADS} release-static-linux-armv7;; \
+      armv7*) make -j${BUILD_THREADS:-$(nproc)} release-static-linux-armv7;; \
       *) echo "Unexpected architecture: $(uname -m)" && exit 1;; \
     esac
 
