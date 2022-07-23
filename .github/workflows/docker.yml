@@ -83,13 +83,19 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          build="docker buildx build ${platforms} \
+          for platform in $(printf ${PLATFORMS} | sed 's/,/ /g'); do
+            arch=$(printf $platform | awk -F'/' '{print $2 "-" $3}' | sed -e 's/-$//g')
+            cacheRegistry="$cacheRegistry --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION-${arch}-cache"
+          done
+
+          build="docker buildx build --platform ${PLATFORMS} \
             --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
             --build-arg BUILD_THREADS=3 \
             --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
             --cache-to type=gha,mode=max \
             --cache-from type=gha \
+            $cacheRegistry \
             --push ."
 
           echo "$build"
