@@ -48,9 +48,8 @@ jobs:
             --platform linux/${{ matrix.arch }} \
             --build-arg BUILD_THREADS=3 \
             --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH}-cache \
-            --cache-to type=gha,mode=max \
-            --cache-from type=gha \
             --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH}-cache \
+            --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:latest-${ARCH}-cache \
             --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH} \
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${VERSION}-${ARCH} \
             --push \
@@ -93,8 +92,6 @@ jobs:
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
             --build-arg BUILD_THREADS=3 \
             --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
-            --cache-to type=gha,mode=max \
-            --cache-from type=gha \
             $cacheRegistry \
             --push ."
 
