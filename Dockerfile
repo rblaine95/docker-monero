@@ -17,12 +17,12 @@ RUN apt-get update && \
         libusb-1.0-0-dev libprotobuf-dev protobuf-compiler \
         libudev-dev libboost-chrono-dev libboost-container-dev \
         libboost-date-time-dev libboost-filesystem-dev \
-        libboost-locale-dev  libboost-program-options-dev libboost-regex-dev \
+        libboost-locale-dev libboost-program-options-dev libboost-regex-dev \
         libboost-serialization-dev libboost-system-dev \
         libboost-thread-dev python3 ccache doxygen graphviz \
         libevent-dev libnorm-dev
 
-ARG MONERO_VERSION=0.18.0.0
+ARG MONERO_VERSION=0.18.1.0
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 ARG BUILD_THREADS
@@ -38,11 +38,11 @@ RUN set -ex && wget https://github.com/libexpat/libexpat/releases/download/R_2_4
 
 # Build libunbound
 WORKDIR /tmp
-RUN set -ex && wget https://www.nlnetlabs.nl/downloads/unbound/unbound-1.16.1.tar.gz && \
-    echo "2fe4762abccd564a0738d5d502f57ead273e681e92d50d7fba32d11103174e9a  unbound-1.16.1.tar.gz" | sha256sum -c && \
-    tar -xzf unbound-1.16.1.tar.gz && \
-    rm unbound-1.16.1.tar.gz && \
-    cd unbound-1.16.1 && \
+RUN set -ex && wget https://www.nlnetlabs.nl/downloads/unbound/unbound-1.16.2.tar.gz && \
+    echo "2e32f283820c24c51ca1dd8afecfdb747c7385a137abe865c99db4b257403581  unbound-1.16.2.tar.gz" | sha256sum -c && \
+    tar -xzf unbound-1.16.2.tar.gz && \
+    rm unbound-1.16.2.tar.gz && \
+    cd unbound-1.16.2 && \
     ./configure --disable-shared \
       --enable-static \
       --without-pyunbound \
