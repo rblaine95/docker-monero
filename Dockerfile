@@ -22,7 +22,7 @@ RUN apt-get update && \
         libboost-thread-dev python3 ccache doxygen graphviz \
         libevent-dev libnorm-dev
 
-ARG MONERO_VERSION=0.18.0.0
+ARG MONERO_VERSION=0.18.1.0
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 ARG BUILD_THREADS
