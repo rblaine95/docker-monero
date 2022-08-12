@@ -44,6 +44,13 @@ RUN wget -q -O hashes.txt https://www.getmonero.org/downloads/hashes.txt && \
     rm -f monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 hashes.txt hashes.txt.sig
 
 ##################
+# -- exporter -- #
+##################
+FROM docker.io/golang:1.22 AS exporter
+
+RUN GO111MODULE=on go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@master
+
+##################
 # --- runner --- #
 ##################
 FROM docker.io/debian:12-slim AS runner
@@ -63,6 +70,8 @@ RUN apt-get update && \
     chown -R monero:monero /opt/bitmonero
 
 COPY --from=builder /opt/monero/* /opt/monero/
+COPY --from=exporter /go/bin/monero-exporter /opt/monero/monero-exporter
+COPY ./entrypoint.sh /entrypoint.sh
 
 USER monero
 WORKDIR /home/monero
@@ -77,4 +86,4 @@ EXPOSE 18089
 
 HEALTHCHECK CMD curl --fail http://127.0.0.1:18081/get_height || exit 1
 
-ENTRYPOINT ["tini", "--" ,"/opt/monero/monerod"]
+ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
