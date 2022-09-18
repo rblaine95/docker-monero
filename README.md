@@ -37,8 +37,9 @@ You should definitly get some.
 * [GetMonero.org](https://www.getmonero.org/)  
 * [/r/monero](https://www.reddit.com/r/monero)  
 * [ChangeNow.io](https://changenow.io/)  
-* [MorphToken.com](https://www.morphtoken.com)  
-* [Haveno](https://github.com/haveno-dex/haveno)
+* [OrangeFren](https://orangefren.com/)  
+* [Haveno](https://github.com/haveno-dex/haveno)  
+* [Monero.com by Cake Wallet](https://monero.com/)
 
 
 [github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
