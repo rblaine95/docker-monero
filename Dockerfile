@@ -22,27 +22,27 @@ RUN apt-get update && \
         libboost-thread-dev python3 ccache doxygen graphviz \
         libevent-dev libnorm-dev
 
-ARG MONERO_VERSION=0.18.1.1
+ARG MONERO_VERSION=0.18.1.2
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/monero-project/monero.git -b v${MONERO_VERSION}
 
 ARG BUILD_THREADS
 # Build libexpact - required for libunbound
-RUN set -ex && wget https://github.com/libexpat/libexpat/releases/download/R_2_4_8/expat-2.4.8.tar.bz2 && \
-    echo "a247a7f6bbb21cf2ca81ea4cbb916bfb9717ca523631675f99b3d4a5678dcd16  expat-2.4.8.tar.bz2" | sha256sum -c && \
-    tar -xf expat-2.4.8.tar.bz2 && \
-    rm expat-2.4.8.tar.bz2 && \
-    cd expat-2.4.8 && \
+RUN set -ex && wget https://github.com/libexpat/libexpat/releases/download/R_2_4_9/expat-2.4.9.tar.bz2 && \
+    echo "7f44d1469b110773a94b0d5abeeeffaef79f8bd6406b07e52394bcf48126437a  expat-2.4.9.tar.bz2" | sha256sum -c && \
+    tar -xf expat-2.4.9.tar.bz2 && \
+    rm expat-2.4.9.tar.bz2 && \
+    cd expat-2.4.9 && \
     ./configure --enable-static --disable-shared --prefix=/usr && \
     make -j${BUILD_THREADS:-$(nproc)} && \
     make -j${BUILD_THREADS:-$(nproc)} install
 
 # Build libunbound
 WORKDIR /tmp
-RUN set -ex && wget https://www.nlnetlabs.nl/downloads/unbound/unbound-1.16.2.tar.gz && \
-    echo "2e32f283820c24c51ca1dd8afecfdb747c7385a137abe865c99db4b257403581  unbound-1.16.2.tar.gz" | sha256sum -c && \
-    tar -xzf unbound-1.16.2.tar.gz && \
-    rm unbound-1.16.2.tar.gz && \
-    cd unbound-1.16.2 && \
+RUN set -ex && wget https://www.nlnetlabs.nl/downloads/unbound/unbound-1.16.3.tar.gz && \
+    echo "ea0c6665e2c3325b769eac1dfccd60fe1828d5fcf662650039eccb3f67edb28e  unbound-1.16.3.tar.gz" | sha256sum -c && \
+    tar -xzf unbound-1.16.3.tar.gz && \
+    rm unbound-1.16.3.tar.gz && \
+    cd unbound-1.16.3 && \
     ./configure --disable-shared \
       --enable-static \
       --without-pyunbound \
