@@ -44,7 +44,7 @@ You should definitly get some.
 
 [github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
 [github-tag-link]: https://github.com/rblaine95/docker_monero/tags
-[github-actions-badge]: https://img.shields.io/github/workflow/status/rblaine95/docker_monero/Docker/master "Github Workflow Status (master)"
+[github-actions-badge]: https://img.shields.io/github/actions/workflow/status/rblaine95/docker_monero/docker.yml?branch=master "Github Workflow Status (master)"
 [github-actions-link]: https://github.com/rblaine95/docker_monero/actions?query=workflow%3ADocker
 [docker-image-size-badge]: https://img.shields.io/docker/image-size/rblaine/monero/latest "Docker Image Size"
 [docker-image-link]: https://hub.docker.com/r/rblaine/monero
