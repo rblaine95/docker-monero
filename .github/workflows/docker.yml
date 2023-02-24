@@ -10,12 +10,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - arch: amd64
-          - arch: arm64/v8
-          - arch: arm/v7
     steps:
       - uses: actions/checkout@v3
       - uses: docker/setup-qemu-action@v2
@@ -29,71 +23,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Build
-        id: build
-        run: |
-          # Get the arch for this build
-          ARCH=$(echo "${{ matrix.arch }}" | sed 's/\//-/g')
-
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg BUILD_THREADS=3 \
-            --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH}-cache \
-            --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH}-cache \
-            --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:latest-${ARCH}-cache \
-            --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${VERSION}-${ARCH} \
-            --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${VERSION}-${ARCH} \
-            --push \
-            .
-  package:
-    name: Package
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/login-action@v2
+      - uses: docker/metadata-action@v4
+        id: meta
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_PAT }}
-      - uses: docker/login-action@v2
+          images: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+            docker.io/rblaine/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=semver,pattern={{version}}
+      - uses: docker/build-push-action@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-      - name: Package
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-
-          for platform in $(printf ${PLATFORMS} | sed 's/,/ /g'); do
-            arch=$(printf $platform | awk -F'/' '{print $2 "-" $3}' | sed -e 's/-$//g')
-            cacheRegistry="$cacheRegistry --cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION-${arch}-cache"
-          done
-
-          build="docker buildx build --platform ${PLATFORMS} \
-            --tag ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$VERSION \
-            --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$VERSION \
-            --build-arg BUILD_THREADS=3 \
-            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
-            $cacheRegistry \
-            --push ."
-
-          echo "$build"
-          $build
+          platforms: ${{ env.PLATFORMS }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
