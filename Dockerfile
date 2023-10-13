@@ -1,7 +1,7 @@
 ###################
 # --- builder --- #
 ###################
-FROM docker.io/debian:11-slim AS builder
+FROM docker.io/debian:12-slim AS builder
 
 WORKDIR /opt
 
@@ -10,12 +10,12 @@ RUN apt-get update && \
     apt-get install -y \
       wget ca-certificates bzip2
 
-ARG MONERO_VERSION=v0.18.2.2
+ARG MONERO_VERSION=v0.18.3.1
 WORKDIR /opt/monero
 RUN case "$(uname -m)" in \
-      x86_64) ARCH="x64"; SHA256SUM="186800de18f67cca8475ce392168aabeb5709a8f8058b0f7919d7c693786d56b" ;; \
-      aarch64* | arm64 | armv8*) ARCH="armv8"; SHA256SUM="f3867f2865cb98ab1d18f30adfd9168f397bd07bf7c36550dfe3a2a11fc789ba" ;; \
-      armv7*) ARCH="armv7"; SHA256SUM="11b70a9965e3749970531baaa6c9d636b631d8b0a0256ee23a8e519f13b4b300" ;; \
+      x86_64) ARCH="x64"; SHA256SUM="23af572fdfe3459b9ab97e2e9aa7e3c11021c955d6064b801a27d7e8c21ae09d" ;; \
+      aarch64* | arm64 | armv8*) ARCH="armv8"; SHA256SUM="445032e88dc07e51ac5fff7034752be530d1c4117d8d605100017bcd87c7b21f" ;; \
+      armv7*) ARCH="armv7"; SHA256SUM="2ea2c8898cbab88f49423f4f6c15f2a94046cb4bbe827493dd061edc0fd5f1ca" ;; \
       *) echo "Unexpected architecture: $(uname -m)" && exit 1;; \
     esac \
     \
@@ -27,7 +27,7 @@ RUN case "$(uname -m)" in \
 ##################
 # --- runner --- #
 ##################
-FROM docker.io/debian:11-slim AS runner
+FROM docker.io/debian:12-slim AS runner
 
 ENV PATH=/opt/monero:${PATH}
 
