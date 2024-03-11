@@ -10,12 +10,12 @@ RUN apt-get update && \
     apt-get install -y \
       wget ca-certificates bzip2
 
-ARG MONERO_VERSION=v0.18.3.1
+ARG MONERO_VERSION=v0.18.3.2
 WORKDIR /opt/monero
 RUN case "$(uname -m)" in \
-      x86_64) ARCH="x64"; SHA256SUM="23af572fdfe3459b9ab97e2e9aa7e3c11021c955d6064b801a27d7e8c21ae09d" ;; \
-      aarch64* | arm64 | armv8*) ARCH="armv8"; SHA256SUM="445032e88dc07e51ac5fff7034752be530d1c4117d8d605100017bcd87c7b21f" ;; \
-      armv7*) ARCH="armv7"; SHA256SUM="2ea2c8898cbab88f49423f4f6c15f2a94046cb4bbe827493dd061edc0fd5f1ca" ;; \
+      x86_64) ARCH="x64"; SHA256SUM="9dafd70230a7b3a73101b624f3b5f439cc5b84a19b12c17c24e6aab94b678cbb" ;; \
+      aarch64* | arm64 | armv8*) ARCH="armv8"; SHA256SUM="72f5c90955a736d99c1a645850984535050ebddd42c39a27eec1df82bd972126" ;; \
+      armv7*) ARCH="armv7"; SHA256SUM="5df3a1390960c1632c797b8dfb46e93ebb2e93498e4e5e517be0bda6ff5b719b" ;; \
       *) echo "Unexpected architecture: $(uname -m)" && exit 1;; \
     esac \
     \
