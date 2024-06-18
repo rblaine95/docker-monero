@@ -36,7 +36,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             type=raw,value={{branch}},enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             type=ref,event=tag
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
           platforms: ${{ env.PLATFORMS }}
           push: true
