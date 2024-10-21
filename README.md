@@ -1,8 +1,11 @@
 # Docker Monero
-My personal unprivileged Monero Docker image.  
 
-[![Github tag (latest by date)][github-tag-badge]][github-tag-link]  
-[![GitHub Workflow Status (branch)][github-actions-badge]][github-actions-link]  
+My personal unprivileged Monero Docker image.
+
+[![Github tag (latest by date)][github-tag-badge]][github-tag-link]
+
+[![GitHub Workflow Status (branch)][github-actions-badge]][github-actions-link]
+
 [![Docker Image Size (latest by date)][docker-image-size-badge]][docker-image-link]
 
 Usage:
@@ -16,31 +19,56 @@ docker run \
   ghcr.io/rblaine95/monero ${EXTRA_MONEROD_ARGS}
 ```
 
-### Where can I download the image?
+Running with [Tor](https://github.com/rblaine95/docker-tor):
+
+```sh
+docker run -d --name tor \
+  --restart=always \
+  -p 9050:9050 \
+  -v $(pwd)/tor-data:/var/lib/tor \
+  ghcr.io/rblaine95/tor
+
+docker run -d --name monerod \
+  --restart=always \
+  --net=host \
+  -v $(pwd)/monero:/opt/bitmonero \
+  ghcr.io/rblaine95/monero:0.18.3.4-1 \
+    --non-interactive \
+    --no-igd \
+    --confirm-external-bind \
+    --rpc-restricted-bind-port=18089 \
+    --rpc-restricted-bind-ip=0.0.0.0 \
+    --enable-dns-blocklist \
+    --pad-transactions \
+    --proxy=127.0.0.1:9050 \
+    --tx-proxy=tor,127.0.0.1:9050,16
+```
+
+### Where can I download this image?
+
 I'm using Github Actions to build and publish this image to:
+
 * [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
 * [docker.io/rblaine/monero](https://hub.docker.com/r/rblaine/monero)
 
-### Future stuff
-I don't know, maybe I'll write a helm chart for this for Kubernetes?  
-That might be fun.
-
 ### I want to buy you a coffee
-This is just a hobby project for me, if you really want to buy me a coffee, thank you :)  
 
-Monero: `83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh`  
+This is just a hobby project for me, if you really want to buy me a coffee, thank you :)
+
+Monero: `83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh`
 ![XMR Address](https://api.qrserver.com/v1/create-qr-code/?data=83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh&amp;size=150x150 "83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh")
 
 ### I don't have Monero
-You should definitly get some.  
-* [monero-project/monero](https://github.com/monero-project/monero)  
-* [GetMonero.org](https://www.getmonero.org/)  
-* [/r/monero](https://www.reddit.com/r/monero)  
-* [ChangeNow.io](https://changenow.io/)  
-* [OrangeFren](https://orangefren.com/)  
-* [Haveno](https://github.com/haveno-dex/haveno)  
-* [Monero.com by Cake Wallet](https://monero.com/)
 
+You should definitly get some.
+
+* [monero-project/monero](https://github.com/monero-project/monero)
+* [GetMonero.org](https://www.getmonero.org/)
+* [/r/monero](https://www.reddit.com/r/monero)
+* [OrangeFren](https://orangefren.com/)
+* [Trocador](https://trocador.app/en/)
+* [Haveno Reto](https://haveno-reto.com/)
+* [Monero.com by Cake Wallet](https://monero.com/)
 
 [github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
 [github-tag-link]: https://github.com/rblaine95/docker_monero/tags
