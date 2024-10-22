@@ -32,7 +32,7 @@ docker run -d --name monerod \
   --restart=always \
   --net=host \
   -v $(pwd)/monero:/opt/bitmonero \
-  ghcr.io/rblaine95/monero:0.18.3.4-1 \
+  ghcr.io/rblaine95/monero:0.18.3.4-2 \
     --non-interactive \
     --no-igd \
     --confirm-external-bind \
