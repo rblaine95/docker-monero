@@ -8,21 +8,40 @@ WORKDIR /opt
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
     apt-get install -y \
-      wget ca-certificates bzip2
+      wget ca-certificates bzip2 gnupg git
 
 ARG MONERO_VERSION=v0.18.3.4
 WORKDIR /opt/monero
-RUN case "$(uname -m)" in \
-      x86_64) ARCH="x64"; SHA256SUM="51ba03928d189c1c11b5379cab17dd9ae8d2230056dc05c872d0f8dba4a87f1d" ;; \
-      aarch64* | arm64 | armv8*) ARCH="armv8"; SHA256SUM="33ca2f0055529d225b61314c56370e35606b40edad61c91c859f873ed67a1ea7" ;; \
-      armv7*) ARCH="armv7"; SHA256SUM="354603c56446fb0551cdd6933bce5a13590b7881e05979b7ec25d89e7e59a0e2" ;; \
+
+RUN git clone --filter=blob:none --sparse https://github.com/monero-project/monero -b ${MONERO_VERSION} && \
+    cd monero && \
+    git sparse-checkout set utils/gpg_keys && \
+    mkdir -p /root/.gnupg && \
+    chmod 700 /root/.gnupg && \
+    for key in utils/gpg_keys/*.asc; do \
+        gpg --import "$key"; \
+    done && \
+    cd .. && \
+    rm -rf monero
+
+RUN wget -q -O hashes.txt https://www.getmonero.org/downloads/hashes.txt && \
+    wget -q -O hashes.txt.sig https://www.getmonero.org/downloads/hashes.txt.sig && \
+    gpg --verify hashes.txt.sig hashes.txt && \
+    case "$(uname -m)" in \
+      x86_64) ARCH="x64" ;; \
+      aarch64* | arm64 | armv8*) ARCH="armv8" ;; \
+      armv7*) ARCH="armv7" ;; \
       *) echo "Unexpected architecture: $(uname -m)" && exit 1;; \
-    esac \
-    \
-    && wget https://downloads.getmonero.org/cli/monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 \
-    && echo "${SHA256SUM}  monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2" | sha256sum -c \
-    && tar -xjvf monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 --strip-components 1 \
-    && rm -f monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2
+    esac && \
+    MONERO_HASH=$(grep "monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2" hashes.txt | cut -d' ' -f1) && \
+    if [ -z "$MONERO_HASH" ]; then \
+        echo "Hash not found for architecture ${ARCH} and version ${MONERO_VERSION}" && \
+        exit 1; \
+    fi && \
+    wget https://downloads.getmonero.org/cli/monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 && \
+    echo "${MONERO_HASH}  monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2" | sha256sum -c && \
+    tar -xjf monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 --strip-components 1 && \
+    rm -f monero-linux-${ARCH}-${MONERO_VERSION}.tar.bz2 hashes.txt hashes.txt.sig
 
 ##################
 # --- runner --- #
