@@ -1,0 +1,53 @@
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  monerod:
+    container_name: monerod
+    image: ghcr.io/rblaine95/monero:0.18.3.4-2
+    network_mode: host
+    volumes:
+      - ./monero-data:/opt/bitmonero
+    command:
+      - --non-interactive
+      - --no-igd
+      - --confirm-external-bind
+      - --rpc-restricted-bind-port=18089
+      - --rpc-restricted-bind-ip=0.0.0.0
+      - --rpc-bind-port=18081
+      - --rpc-bind-ip=127.0.0.1
+      - --enable-dns-blocklist
+      - --pad-transactions
+      - --proxy=127.0.0.1:9050
+      - --tx-proxy=tor,127.0.0.1:9050,16
+
+  prep-tor-data:
+    container_name: prep-volume
+    image: alpine
+    volumes:
+      - ./tor-data:/var/lib/tor
+    command:
+      - sh
+      - -c
+      - |
+        chown -R 100:65533 /var/lib/tor
+        chmod 0700 /var/lib/tor
+
+  tor:
+    container_name: tor
+    image: ghcr.io/rblaine95/tor
+    volumes:
+      - ./tor-data:/var/lib/tor
+    network_mode: host
+    environment:
+      TOR_DATA_DIRECTORY: /var/lib/tor
+      TOR_LOG: notice stderr
+      TOR_SOCKS_PORT: 0.0.0.0:9050
+
+      MONEROD_TOR_HIDDEN_SERVICE_DIR: /var/lib/tor/monerod
+      MONEROD_TOR_HIDDEN_SERVICE_PORT: 18089 127.0.0.1:18089
+    depends_on:
+      - prep-tor-data
