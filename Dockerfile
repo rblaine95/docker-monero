@@ -52,7 +52,7 @@ ENV PATH=/opt/monero:${PATH}
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y tini ca-certificates && \
+    apt-get install -y tini ca-certificates curl && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt && \
@@ -67,6 +67,14 @@ COPY --from=builder /opt/monero/* /opt/monero/
 USER monero
 WORKDIR /home/monero
 VOLUME /opt/bitmonero
-EXPOSE 18080 18081
+
+# P2P
+EXPOSE 18080
+# RPC
+EXPOSE 18081
+# RPC Restricted
+EXPOSE 18089
+
+HEALTHCHECK CMD curl --fail http://127.0.0.1:18081/get_height || exit 1
 
 ENTRYPOINT ["tini", "--" ,"/opt/monero/monerod"]
