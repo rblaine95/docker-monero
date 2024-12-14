@@ -41,7 +41,7 @@ services:
 
   monerod:
     container_name: monerod
-    image: ghcr.io/rblaine95/monero:0.18.3.4-2
+    image: ghcr.io/rblaine95/monero:0.18.3.4-3
     restart: unless-stopped
     network_mode: host
     volumes:
