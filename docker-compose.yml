@@ -15,6 +15,30 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  prep-ban-list:
+    container_name: prep-ban-list
+    image: alpine
+    volumes:
+      - ./monero-data:/data
+    command:
+      - sh
+      - -c
+      - |
+        apk add --no-cache git wget gnupg
+        cd /tmp
+        git clone https://github.com/Boog900/monero-ban-list
+        cd monero-ban-list
+        wget https://raw.githubusercontent.com/Cuprate/cuprate/7b8756fa80e386fb04173d8220c15c86bf9f9888/misc/gpg_keys/boog900.asc
+        wget -O rucknium.asc https://rucknium.me/pgp.txt || wget -O rucknium.asc https://gist.githubusercontent.com/Rucknium/262526e37732241bb0e676c670b8c60d/raw
+        wget https://raw.githubusercontent.com/monero-project/monero/004ead1a14d60ff757880c5b16b894b526427829/utils/gpg_keys/jeffro256.asc
+        gpg --import boog900.asc
+        gpg --import rucknium.asc
+        gpg --import jeffro256.asc
+        gpg --verify --status-fd 1 --verify ./sigs/boog900.sig ban_list.txt 2>/dev/null
+        gpg --verify --status-fd 1 --verify ./sigs/Rucknium.sig ban_list.txt 2>/dev/null
+        gpg --verify --status-fd 1 --verify ./sigs/jeffro256.sig ban_list.txt 2>/dev/null
+        cp ban_list.txt /data/ban_list.txt
+
   monerod:
     container_name: monerod
     image: ghcr.io/rblaine95/monero:0.18.3.4-2
@@ -22,6 +46,8 @@ services:
     network_mode: host
     volumes:
       - ./monero-data:/opt/bitmonero
+    depends_on:
+      - prep-ban-list
     command:
       # https://getmonero.dev/interacting/monerod
       - --non-interactive
@@ -36,6 +62,7 @@ services:
       - --pad-transactions
       - --proxy=127.0.0.1:9050
       - --tx-proxy=tor,127.0.0.1:9050,16
+      - --ban-list=/opt/bitmonero/ban_list.txt
       - --add-priority-node=xwvz3ekocr3dkyxfkmgm2hvbpzx2ysqmaxgter7znnqrhoicygkfswid.onion:18083
       - --add-priority-node=4pixvbejrvihnkxmduo2agsnmc3rrulrqc7s3cbwwrep6h6hrzsibeqd.onion:18083
       - --add-priority-node=zbjkbsxc5munw3qusl7j2hpcmikhqocdf4pqhnhtpzw5nt5jrmofptid.onion:18083
