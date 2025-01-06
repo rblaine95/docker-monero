@@ -47,7 +47,13 @@ services:
     volumes:
       - ./monero-data:/opt/bitmonero
     depends_on:
-      - prep-ban-list
+      prep-ban-list:
+        condition: service_completed_successfully
+      tor:
+        condition: service_healthy
+    environment:
+      # https://github.com/monero-project/monero/pull/8677
+      MONERO_RANDOMX_FULL_MEM: 1
     command:
       # https://getmonero.dev/interacting/monerod
       - --non-interactive
