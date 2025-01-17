@@ -1,7 +1,7 @@
 ##################
-# -- exporter -- #
+# -- builder -- #
 ##################
-FROM docker.io/golang:1.23-alpine AS exporter
+FROM docker.io/golang:1.23-alpine AS builder
 
 RUN GO111MODULE=on go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@cf21000
 
@@ -10,7 +10,7 @@ RUN GO111MODULE=on go install github.com/cirocosta/monero-exporter/cmd/monero-ex
 ##################
 FROM docker.io/alpine:3 AS runner
 
-COPY --from=exporter /go/bin/monero-exporter /usr/local/bin/monero-exporter
+COPY --from=builder /go/bin/monero-exporter /usr/local/bin/monero-exporter
 
 EXPOSE 9000
 
