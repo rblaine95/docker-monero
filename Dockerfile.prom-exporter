@@ -3,7 +3,7 @@
 ##################
 FROM docker.io/golang:1.23-alpine AS exporter
 
-RUN GO111MODULE=on go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@master
+RUN GO111MODULE=on go install github.com/cirocosta/monero-exporter/cmd/monero-exporter@cf21000
 
 ##################
 # -- runner -- #
