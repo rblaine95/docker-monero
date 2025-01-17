@@ -82,6 +82,22 @@ services:
       - --add-peer=plowsoffjexmxalw73tkjmf422gq6575fc7vicuu4javzn2ynnte6tyd.onion:18083
       - --add-peer=qz43zul2x56jexzoqgkx2trzwcfnr6l3hbtfcfx54g4r3eahy3bssjyd.onion:18083
 
+  monero-exporter:
+    container_name: monero-exporter
+    image: ghcr.io/rblaine95/monero-exporter
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      monerod:
+        condition: service_healthy
+    command:
+      - --bind-addr
+      - :9000
+      - --monero-addr
+      - http://127.0.0.1:18081
+      - --telemetry-path
+      - /metrics
+
   prep-tor-data:
     container_name: prep-volume
     image: alpine
