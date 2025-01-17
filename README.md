@@ -3,9 +3,7 @@
 My personal unprivileged Monero Docker image.
 
 [![Github tag (latest by date)][github-tag-badge]][github-tag-link]
-
 [![GitHub Workflow Status (branch)][github-actions-badge]][github-actions-link]
-
 [![Docker Image Size (latest by date)][docker-image-size-badge]][docker-image-link]
 
 ## IP Ban List
