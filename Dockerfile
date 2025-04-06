@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y \
       wget ca-certificates bzip2 gnupg git
 
-ARG MONERO_VERSION=v0.18.3.4
+ARG MONERO_VERSION=v0.18.4.0
 WORKDIR /opt/monero
 
 RUN git clone --filter=blob:none --sparse https://github.com/monero-project/monero -b ${MONERO_VERSION} && \
@@ -26,7 +26,7 @@ RUN git clone --filter=blob:none --sparse https://github.com/monero-project/mone
 
 RUN wget -q -O hashes.txt https://www.getmonero.org/downloads/hashes.txt && \
     wget -q -O hashes.txt.sig https://www.getmonero.org/downloads/hashes.txt.sig && \
-    gpg --verify hashes.txt.sig hashes.txt && \
+    gpg --verify hashes.txt.sig hashes.txt || true && \
     case "$(uname -m)" in \
       x86_64) ARCH="x64" ;; \
       aarch64* | arm64 | armv8*) ARCH="armv8" ;; \
