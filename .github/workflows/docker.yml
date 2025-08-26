@@ -5,7 +5,7 @@ on: [workflow_dispatch, push]
 env:
   MONERO_IMAGE_NAME: monero
   EXPORTER_IMAGE_NAME: monero-exporter
-  PLATFORMS: linux/amd64,linux/arm64/v8,linux/arm/v7
+  PLATFORMS: linux/amd64,linux/arm64/v8
 
 jobs:
   check-changes:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        arch: [amd64, arm64, armv7]
+        arch: [amd64, arm64]
         include:
           - arch: amd64
             runs-on: ubuntu-latest
@@ -35,12 +35,8 @@ jobs:
           - arch: arm64
             runs-on: ubuntu-24.04-arm
             platform: linux/arm64
-          - arch: armv7
-            runs-on: ubuntu-24.04-arm
-            platform: linux/arm/v7
     steps:
       - uses: actions/checkout@v5
-      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
         with:
           cache-binary: false
@@ -63,7 +59,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        arch: [amd64, arm64, armv7]
+        arch: [amd64, arm64]
         include:
           - arch: amd64
             runs-on: ubuntu-latest
@@ -71,12 +67,8 @@ jobs:
           - arch: arm64
             runs-on: ubuntu-24.04-arm
             platform: linux/arm64
-          - arch: armv7
-            runs-on: ubuntu-24.04-arm
-            platform: linux/arm/v7
     steps:
       - uses: actions/checkout@v5
-      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
         with:
           cache-binary: false
@@ -102,7 +94,6 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v5
-      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
         with:
           cache-binary: false
@@ -137,7 +128,6 @@ jobs:
             type=gha,scope=monero-package
             type=gha,scope=monero-build-amd64
             type=gha,scope=monero-build-arm64
-            type=gha,scope=monero-build-armv7
           cache-to: |
             type=gha,mode=max,scope=monero-package
 
@@ -151,7 +141,6 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v5
-      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
         with:
           cache-binary: false
@@ -187,6 +176,5 @@ jobs:
             type=gha,scope=exporter-package
             type=gha,scope=exporter-build-amd64
             type=gha,scope=exporter-build-arm64
-            type=gha,scope=exporter-build-armv7
           cache-to: |
             type=gha,mode=max,scope=exporter-package
