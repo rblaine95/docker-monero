@@ -1,7 +1,7 @@
 ###################
 # --- builder --- #
 ###################
-FROM docker.io/debian:12-slim AS builder
+FROM docker.io/debian:13-slim AS builder
 
 WORKDIR /opt
 
@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y \
       wget ca-certificates bzip2 gnupg git
 
-ARG MONERO_VERSION=v0.18.4.1
+ARG MONERO_VERSION=v0.18.4.2
 WORKDIR /opt/monero
 
 RUN git clone --filter=blob:none --sparse https://github.com/monero-project/monero -b ${MONERO_VERSION} && \
@@ -46,7 +46,7 @@ RUN wget -q -O hashes.txt https://www.getmonero.org/downloads/hashes.txt && \
 ##################
 # --- runner --- #
 ##################
-FROM docker.io/debian:12-slim AS runner
+FROM docker.io/debian:13-slim AS runner
 
 ENV PATH=/opt/monero:${PATH}
 
