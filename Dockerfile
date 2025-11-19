@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y \
       wget ca-certificates bzip2 gnupg git
 
-ARG MONERO_VERSION=v0.18.4.3
+ARG MONERO_VERSION=v0.18.4.4
 WORKDIR /opt/monero
 
 RUN git clone --filter=blob:none --sparse https://github.com/monero-project/monero -b ${MONERO_VERSION} && \
