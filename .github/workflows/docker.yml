@@ -37,7 +37,7 @@ jobs:
             platform: linux/arm64
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         with:
           cache-binary: false
           install: true
@@ -69,7 +69,7 @@ jobs:
             platform: linux/arm64
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         with:
           cache-binary: false
           install: true
@@ -94,7 +94,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         with:
           cache-binary: false
           install: true
@@ -141,7 +141,7 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
         with:
           cache-binary: false
           install: true
