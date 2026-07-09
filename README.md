@@ -7,6 +7,7 @@ My personal unprivileged Monero Docker image.
 [![Docker Image Size (latest by date)][docker-image-size-badge]][docker-image-link]
 
 ## IP Ban List
+
 The Monero Research Lab (MRL) has identified a network of suspected spy nodes that may reduce transaction privacy on the Monero network.
 
 While this Docker image doesn't package the ban list directly, we provide instructions for implementing it with your node.
@@ -15,15 +16,16 @@ While this Docker image doesn't package the ban list directly, we provide instru
 
 These spy nodes are believed to be operated by adversaries attempting to deanonymize Monero transactions by:
 
-* Proxying a few nodes through many IP addresses
-* Creating high subnet saturation in specific IP ranges
-* Potentially weakening Dandelion++ transaction privacy
+- Proxying a few nodes through many IP addresses
+- Creating high subnet saturation in specific IP ranges
+- Potentially weakening Dandelion++ transaction privacy
 
 For more detailed information, please see monero-project/meta#1124.
 
 ### Implementing the Ban List
 
 1. Download the ban list:
+
 ```bash
 wget -O ./monero-data/ban_list.txt \
   https://raw.githubusercontent.com/Boog900/monero-ban-list/refs/heads/main/ban_list.txt
@@ -62,12 +64,13 @@ docker run \
 
 ### Important notes
 
-* Using the ban list is optional but recommended by MRL
-* The ban list is maintained at [Boog900/monero-ban-list](https://github.com/Boog900/monero-ban-list)
-* You may want to periodically update your ban list to include newly identified spy nodes
-* The effectiveness of the ban list depends on widespread adoption by node operators
+- Using the ban list is optional but recommended by MRL
+- The ban list is maintained at [Boog900/monero-ban-list](https://github.com/Boog900/monero-ban-list)
+- You may want to periodically update your ban list to include newly identified spy nodes
+- The effectiveness of the ban list depends on widespread adoption by node operators
 
 ## Usage:
+
 ```sh
 docker run \
   -dit \
@@ -107,27 +110,27 @@ docker run -d --name monerod \
 
 I'm using Github Actions to build and publish this image to:
 
-* [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
-* [docker.io/rblaine/monero](https://hub.docker.com/r/rblaine/monero)
+- [ghcr.io/rblaine95/monero](https://ghcr.io/rblaine95/monero)
+- [docker.io/rblaine/monero](https://hub.docker.com/r/rblaine/monero)
 
 ## I want to buy you a coffee
 
 This is just a hobby project for me, if you really want to buy me a coffee, thank you :)
 
 Monero: `83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh`
-![XMR Address](https://api.qrserver.com/v1/create-qr-code/?data=83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh&amp;size=150x150 "83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh")
+![XMR Address](https://api.qrserver.com/v1/create-qr-code/?data=83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh&size=150x150 "83TeC9hCsZjjUcvNVH6VD64FySQ2uTbgw6ETfzNJa51sJaM6XL4NParSNsKqEQN4znfpbtVj84smigtLBtT1AW6BTVQVQGh")
 
 ## I don't have Monero
 
 You should definitly get some.
 
-* [monero-project/monero](https://github.com/monero-project/monero)
-* [GetMonero.org](https://www.getmonero.org/)
-* [/r/monero](https://www.reddit.com/r/monero)
-* [OrangeFren](https://orangefren.com/)
-* [Trocador](https://trocador.app/en/)
-* [Haveno Reto](https://haveno-reto.com/)
-* [Monero.com by Cake Wallet](https://monero.com/)
+- [monero-project/monero](https://github.com/monero-project/monero)
+- [GetMonero.org](https://www.getmonero.org/)
+- [/r/monero](https://www.reddit.com/r/monero)
+- [OrangeFren](https://orangefren.com/)
+- [Trocador](https://trocador.app/en/)
+- [Haveno Reto](https://haveno-reto.com/)
+- [Monero.com by Cake Wallet](https://monero.com/)
 
 [github-tag-badge]: https://img.shields.io/github/v/tag/rblaine95/docker_monero "Github tag (latest by date)"
 [github-tag-link]: https://github.com/rblaine95/docker_monero/tags
